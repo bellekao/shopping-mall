@@ -1,0 +1,15 @@
+package com.kaobelle.bookmall.service;
+
+import com.kaobelle.bookmall.dto.BookRequest;
+import com.kaobelle.bookmall.model.Book;
+
+public interface BookService {
+
+    Book getBookById(Integer bookId);
+
+    Integer createBook(BookRequest bookRequest);
+
+    void updateBook(Integer bookId, BookRequest bookRequest);
+
+    void deleteBook(Integer bookId);
+}

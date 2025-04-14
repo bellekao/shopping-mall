@@ -1,16 +1,26 @@
-package com.kaobelle.bookmall.model;
+package com.kaobelle.bookmall.dto;
 
 import com.kaobelle.bookmall.constant.BookCategory;
+import jakarta.validation.constraints.NotNull;
 
-public class Book {
-    private Integer bookId;
+public class BookRequest {
+    @NotNull
     private String title;
+
+    @NotNull
     private String author;
+
+    @NotNull
     private BookCategory category;
+
+    @NotNull
     private String imageUrl;
+
+    @NotNull
     private Integer price;
+
+    @NotNull
     private Integer stock;
-    private Integer sale;
 
     public String getAuthor() {
         return author;
@@ -18,14 +28,6 @@ public class Book {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public Integer getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(Integer bookId) {
-        this.bookId = bookId;
     }
 
     public BookCategory getCategory() {
@@ -50,14 +52,6 @@ public class Book {
 
     public void setPrice(Integer price) {
         this.price = price;
-    }
-
-    public Integer getSale() {
-        return sale;
-    }
-
-    public void setSale(Integer sale) {
-        this.sale = sale;
     }
 
     public Integer getStock() {
