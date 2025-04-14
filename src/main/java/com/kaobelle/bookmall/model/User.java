@@ -1,11 +1,15 @@
 package com.kaobelle.bookmall.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class User {
     private Integer userId;
     private String userName;
+
+    @JsonIgnore
     private String password;
     private String email;
-    private Integer role;
+    private Integer role; // 0:user, 1:manager
 
     public String getUserName() {
         return userName;

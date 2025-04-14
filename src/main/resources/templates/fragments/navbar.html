@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- fragment 定義 -->
+<div th:fragment="navbar">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/index}">Book Mall</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/users/login}">登入</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/users/register}">註冊</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/carts/cart}">購物車</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/orders/order}">訂單</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/manager/book_manager}">後台管理</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>
