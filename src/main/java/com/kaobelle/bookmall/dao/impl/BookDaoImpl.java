@@ -1,6 +1,7 @@
 package com.kaobelle.bookmall.dao.impl;
 
 import com.kaobelle.bookmall.dao.BookDao;
+import com.kaobelle.bookmall.dto.BookQueryParams;
 import com.kaobelle.bookmall.dto.BookRequest;
 import com.kaobelle.bookmall.model.Book;
 import com.kaobelle.bookmall.rowmapper.BookRowMapper;
@@ -9,17 +10,41 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@Component
 public class BookDaoImpl implements BookDao {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Override
+    public List<Book> getBooks(BookQueryParams bookQueryParams) {
+        String sql = "SELECT book_id, title, author, category, image_url, price, stock, sale FROM `book`" +
+                " WHERE 1 = 1";
+
+        Map<String, Object> map = new HashMap<>();
+        // Filtering
+        if (bookQueryParams.getCategory() != null) {
+            sql = sql + " AND category = :category";
+            map.put("category", bookQueryParams.getCategory().name());
+        }
+        if (bookQueryParams.getSearch() != null) {
+            sql = sql + " AND title LIKE :search";
+            map.put("search", "%" + bookQueryParams.getSearch() + "%");
+        }
+        // Sorting
+        sql = sql + " ORDER BY " + bookQueryParams.getOrderBy() + " " + bookQueryParams.getSort();
+
+
+        List<Book> bookList = namedParameterJdbcTemplate.query(sql, map, new BookRowMapper());
+
+        return bookList;
+    }
 
     @Override
     public Book getBookById(Integer bookId) {

@@ -1,5 +1,7 @@
 package com.kaobelle.bookmall.controller;
 
+import com.kaobelle.bookmall.constant.BookCategory;
+import com.kaobelle.bookmall.dto.BookQueryParams;
 import com.kaobelle.bookmall.dto.BookRequest;
 import com.kaobelle.bookmall.model.Book;
 import com.kaobelle.bookmall.service.BookService;
@@ -16,19 +18,33 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
+    @GetMapping("/api/books")
+    public ResponseEntity<List<Book>> getBooks(
+            // Filtering
+            @RequestParam(required = false) BookCategory category,
+            @RequestParam(required = false) String search,
+            // Sorting
+            @RequestParam(defaultValue = "price") String orderBy,
+            @RequestParam(defaultValue = "desc") String sort
+    ) {
+
+        BookQueryParams bookQueryParams = new BookQueryParams();
+        bookQueryParams.setCategory(category);
+        bookQueryParams.setSearch(search);
+        bookQueryParams.setOrderBy(orderBy);
+        bookQueryParams.setSort(sort);
+
+        List<Book> bookList = bookService.getBooks(bookQueryParams);
+
+        return ResponseEntity.status(HttpStatus.OK).body(bookList);
+    }
+
     @GetMapping("/api/books/{bookId}")
     public ResponseEntity<Book> getBook(@PathVariable Integer bookId) {
         Book book = bookService.getBookById(bookId);
 
         return ResponseEntity.status(HttpStatus.OK).body(book);
     }
-
-//    @GetMapping("/api/books")
-//    public ResponseEntity<List<Book>> getBooks() {
-//        List<Book> bookList = bookService.getBooks();
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(bookList);
-//    }
 
     @PostMapping("/api/books")
     public ResponseEntity<Book> createBook(@RequestBody BookRequest bookRequest) {
@@ -42,12 +58,14 @@ public class BookController {
     @PutMapping("/api/books/{bookId}")
     public ResponseEntity<Book> updateBook(@RequestBody BookRequest bookRequest,
                                            @PathVariable Integer bookId) {
+
         bookService.updateBook(bookId, bookRequest);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        Book updateBook = bookService.getBookById(bookId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(updateBook);
     }
 
-    // delete
     @DeleteMapping("/api/books/{bookId}")
     public ResponseEntity<?> deleteBook(@PathVariable Integer bookId) {
         bookService.deleteBook(bookId);
