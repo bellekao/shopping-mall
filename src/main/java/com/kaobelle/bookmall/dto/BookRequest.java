@@ -3,6 +3,7 @@ package com.kaobelle.bookmall.dto;
 import com.kaobelle.bookmall.constant.BookCategory;
 import jakarta.validation.constraints.NotNull;
 
+
 public class BookRequest {
     @NotNull
     private String title;

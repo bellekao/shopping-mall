@@ -33,7 +33,7 @@ public class BookServiceImpl implements BookService {
 
         if (book == null) {
             log.warn("找不到該本 ID: {} 的書籍", bookId);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到該本書");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "該書籍不存在");
         }
 
         return book;
