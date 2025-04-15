@@ -10,18 +10,17 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @PostMapping("/api/users/register")
+    @PostMapping("/register")
     public ResponseEntity<ApiResponse<User>> register(@RequestBody @Valid UserRegisterRequest userRegisterRequest) {
         Integer userId = userService.register(userRegisterRequest);
 
@@ -30,7 +29,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("新增成功", user));
     }
 
-    @PostMapping("/api/users/login")
+    @PostMapping("/login")
     public ResponseEntity<ApiResponse<User>> login(@RequestBody @Valid UserLoginRequest userLoginRequest,
                                       HttpSession session) {
         User user = userService.login(userLoginRequest);
@@ -43,7 +42,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/api/users/logout")
+    @PostMapping("/logout")
     public ResponseEntity<ApiResponse<String>> logout(HttpSession session) {
 
         User user = (User) session.getAttribute("user");
@@ -54,5 +53,16 @@ public class UserController {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "尚未登入");
         }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<User>> getCurrentUser(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "尚未登入");
+        }
+
+        return ResponseEntity.ok(ApiResponse.success("成功取得使用者資料", user));
     }
 }
