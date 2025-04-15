@@ -42,4 +42,17 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "帳號或密碼錯誤");
         }
     }
+
+    @PostMapping("/api/users/logout")
+    public ResponseEntity<ApiResponse<String>> logout(HttpSession session) {
+
+        User user = (User) session.getAttribute("user");
+
+        if (user != null) {
+            session.invalidate();
+            return ResponseEntity.ok(ApiResponse.success("登出成功"));
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "尚未登入");
+        }
+    }
 }

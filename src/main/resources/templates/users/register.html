@@ -27,43 +27,6 @@
         </form>
     </div>
 </div>
-
-<script>
-    function handleRegister(event) {
-        event.preventDefault();
-
-        var username = document.getElementById("username").value;
-        var password = document.getElementById("password").value;
-        var email = document.getElementById("email").value;
-
-        var registerDate = {
-            "username": username,
-            "password": password,
-            "email": email
-        };
-
-        fetch("/api/users/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(registerDate)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => {
-                        throw new Error(err.message || "註冊失敗");
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                window.location.href = "/index";
-            })
-            .catch(error => {
-                alert(error.message);
-            })
-    }
-</script>
+<script src="/js/common.js"></script>
 </body>
 </html>

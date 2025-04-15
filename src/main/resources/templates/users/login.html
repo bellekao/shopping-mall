@@ -25,47 +25,6 @@
         </form>
     </div>
 </div>
-<script>
-    function handleLogin(event) {
-        event.preventDefault();  // 阻止表單的默認提交
-
-        var username = document.getElementById("email").value;
-        var password = document.getElementById("password").value;
-
-        var loginData = {
-            "email": username,
-            "password": password
-        };
-
-        // 使用 Fetch API 來發送 POST 請求
-        fetch("/api/users/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: 'include',
-            body: JSON.stringify(loginData)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => {
-                        throw new Error(err.message || "登入失敗，請檢查帳號或密碼")
-                    })
-                }
-                return response.json(); // 提取錯誤訊息
-            })
-            .then(user => {
-                if (user.role === 1) {
-                    window.location.href = "/managers/book_manager"
-                } else {
-                    window.location.href = "/index";
-                }
-            })
-            .catch(error => {
-                console.error("錯誤:", error);
-                alert(error.message);
-            });
-    }
-</script>
+<script src="/js/common.js"></script>
 </body>
 </html>
