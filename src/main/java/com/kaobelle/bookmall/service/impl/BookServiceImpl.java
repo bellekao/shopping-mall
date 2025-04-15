@@ -32,8 +32,8 @@ public class BookServiceImpl implements BookService {
         Book book = bookDao.getBookById(bookId);
 
         if (book == null) {
-            log.warn("找不到該本 ID: {} 的書籍", bookId);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "該書籍不存在");
+            log.warn("找不到此書籍 (bookId: {})", bookId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到此書籍");
         }
 
         return book;
@@ -50,7 +50,7 @@ public class BookServiceImpl implements BookService {
 
         // 檢查 商品(bookId) 是否存在
         if (book == null) {
-            log.warn("該本 ID: {} 的書籍不存在", bookId);
+            log.warn("找不到此書籍 (bookId: {})", bookId);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "該書籍不存在");
         }
 
