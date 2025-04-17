@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title th:text="${isEdit} ? '修改書籍' : '新增書籍' ">編輯書籍</title>
+  <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+  />
+  <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<!-- navbar -->
+<div th:replace="~{fragments/navbar.html :: navbar}"></div>
+
+<div class="container mt-5 pt-5">
+  <div class="center-form-container">
+    <h2 class="text-center" th:text="${isEdit} ? '編輯書籍' : '新增書籍'"></h2>
+
+    <form th:action="${isEdit} ? '/api/books/' + ${book.bookId} : '/api/books'"
+          th:object="${book}" method="post" id="book-form">
+
+
+      <!-- 若是修改，使用 hidden 欄位來指定 PUT 方法 -->
+      <input type="hidden" name="_method" th:if="${isEdit}" value="put"/>
+
+      <!-- 加上 hidden input，讓 JS 知道是否是編輯模式 -->
+      <input type="hidden" id="isEdit" th:value="${isEdit}" />
+      <input type="hidden" id="bookId" th:value="${book.bookId}" th:if="${isEdit}" />
+
+
+      <div class="mb-3">
+        <label class="form-label">書名</label>
+        <input type="text" th:field="*{title}" class="form-control"/>
+        <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">作者</label>
+        <input type="text" th:field="*{author}" class="form-control"/>
+        <div class="text-danger" th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">分類</label>
+        <select th:field="*{category}" class="form-select">
+          <option value="">請選擇分類</option>
+          <option th:each="cat : ${categoryOptions}"
+                  th:value="${cat}"
+                  th:text="${cat}"></option>
+        </select>
+        <div class="text-danger" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">圖片網址</label>
+
+        <!-- 有圖片網址：用 row + col 分成左右 -->
+        <div class="row" th:if="${book.imageUrl != null and !#strings.isEmpty(book.imageUrl)}">
+          <div class="col-md-8">
+            <input type="text" th:field="*{imageUrl}" class="form-control"/>
+            <div class="text-danger" th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></div>
+          </div>
+          <div class="col-md-4 d-flex align-items-start">
+            <img th:src="${book.imageUrl}" alt="封面預覽"
+                 class="img-fluid border rounded" style="max-height: 90px;" id="image-preview">
+          </div>
+        </div>
+
+        <!-- 沒圖片網址：輸入欄位用全寬 -->
+        <div th:if="${book.imageUrl == null or #strings.isEmpty(book.imageUrl)}">
+          <input type="text" th:field="*{imageUrl}" class="form-control"/>
+          <div class="text-danger" th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">價格</label>
+        <input type="number" th:field="*{price}" class="form-control" min="0"/>
+        <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">庫存</label>
+        <input type="number" th:field="*{stock}" class="form-control" min="0"/>
+        <div class="text-danger" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
+      </div>
+
+      <div class="text-end">
+        <button type="submit" class="btn btn-success" th:text="${isEdit} ? '更新' : '新增'"></button>
+        <a href="/managers/book_manager" class="btn btn-secondary ms-2">取消</a>
+      </div>
+
+    </form>
+  </div>
+</div>
+<script>
+  document.getElementById("book-form").addEventListener("submit", function (event) {
+    event.preventDefault();  // 防止預設提交行為
+
+    const isEdit = document.getElementById("isEdit").value === "true";
+    const bookId = isEdit ? document.getElementById("bookId").value : null;
+
+    const formData = {
+      title: document.querySelector('input[name="title"]').value,
+      author: document.querySelector('input[name="author"]').value,
+      category: document.querySelector('select[name="category"]').value,
+      imageUrl: document.querySelector('input[name="imageUrl"]').value,
+      price: document.querySelector('input[name="price"]').value,
+      stock: document.querySelector('input[name="stock"]').value
+    };
+
+    const url = isEdit ? `/api/books/${bookId}` : "/api/books";
+    const method = isEdit ? "PUT" : "POST";
+
+    fetch(url, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formData)
+    })
+            .then(response => {
+              if (!response.ok) throw new Error("提交失敗");
+              return response.json();
+            })
+            .then(data => {
+              alert("提交成功！");
+              window.location.href = "/managers/book_manager";
+            })
+            .catch(err => {
+              console.error("提交錯誤:", err);
+              alert("提交失敗，請檢查後再試一次");
+            });
+  });
+</script>
+<script src="/js/navbar.js"></script>
+<script src="/js/common.js"></script>
+
+</body>
+</html>

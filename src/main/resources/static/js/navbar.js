@@ -1,13 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const logoutForm = document.getElementById("logoutForm");
-    if (logoutForm) {
-        logoutForm.addEventListener("submit", function (event) {
-            event.preventDefault(); // 防止預設送出
-            fetch(this.action, {
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            fetch("/api/users/logout", {
                 method: "POST",
-                credentials: "include"
+                credentials: "include",
             })
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error("登出失敗");
+                    return res.json();
+                })
                 .then(data => {
                     if (data.status === "success") {
                         alert("登出成功！");

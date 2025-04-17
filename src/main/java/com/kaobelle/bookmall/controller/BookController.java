@@ -26,8 +26,8 @@ public class BookController {
             @RequestParam(required = false) BookCategory category,
             @RequestParam(required = false) String search,
             // Sorting
-            @RequestParam(defaultValue = "price") String orderBy,
-            @RequestParam(defaultValue = "desc") String sort
+            @RequestParam(defaultValue = "book_id") String orderBy,
+            @RequestParam(defaultValue = "asc") String sort
     ) {
 
         BookQueryParams bookQueryParams = new BookQueryParams();
