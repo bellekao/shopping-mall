@@ -136,4 +136,16 @@ public class CartItemDaoImpl implements CartItemDao {
 
         namedParameterJdbcTemplate.update(sql, map);
     }
+
+    @Override
+    public List<CartItem> getCartForOrder(Integer userId) {
+        String sql = "SELECT user_id, cart_item_id, book_id, quantity FROM `cart_item` WHERE user_id = :userId";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", userId);
+
+        List<CartItem> cartItemList = namedParameterJdbcTemplate.query(sql, map, new CartItemRowMapper());
+
+        return cartItemList;
+    }
 }

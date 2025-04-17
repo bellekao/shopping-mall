@@ -21,4 +21,6 @@ public interface CartItemDao{
     void deleteCartItem(Integer userId, Integer bookId);
 
     void deleteCart(Integer userId);
+
+    List<CartItem> getCartForOrder(Integer userId);
 }

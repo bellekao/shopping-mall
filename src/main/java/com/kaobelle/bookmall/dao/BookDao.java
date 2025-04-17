@@ -17,4 +17,6 @@ public interface BookDao {
     void updateBook(Integer bookId, BookRequest bookRequest);
 
     void deleteBookById(Integer bookId);
+
+    void updateStock(Integer bookId, Integer stock);
 }

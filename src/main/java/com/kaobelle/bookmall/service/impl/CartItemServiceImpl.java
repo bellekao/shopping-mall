@@ -1,6 +1,8 @@
 package com.kaobelle.bookmall.service.impl;
 
 import com.kaobelle.bookmall.dao.CartItemDao;
+import com.kaobelle.bookmall.dto.BuyItem;
+import com.kaobelle.bookmall.dto.CreateOrderRequest;
 import com.kaobelle.bookmall.model.CartItem;
 import com.kaobelle.bookmall.service.CartItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -32,6 +35,27 @@ public class CartItemServiceImpl implements CartItemService {
         }
 
         return cartItem;
+    }
+
+    @Override
+    public CreateOrderRequest getCartForOrder(Integer userId) {
+        // 取得購物車內的所有書籍清單
+        List<CartItem> cartItemList = cartItemDao.getCartForOrder(userId);
+
+        // 將購物車內的所有書籍清單 放入 buyItemList
+        List<BuyItem> buyItemList = new ArrayList<>();
+
+        for (CartItem cartItem : cartItemList) {
+            BuyItem buyItem = new BuyItem();
+            buyItem.setBookId(cartItem.getBookId());
+            buyItem.setQuantity(cartItem.getQuantity());
+            buyItemList.add(buyItem);
+        }
+
+        CreateOrderRequest createOrderRequest = new CreateOrderRequest();
+        createOrderRequest.setBuyItemList(buyItemList);
+
+        return createOrderRequest;
     }
 
     @Override

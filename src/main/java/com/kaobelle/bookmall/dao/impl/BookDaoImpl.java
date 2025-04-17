@@ -109,4 +109,14 @@ public class BookDaoImpl implements BookDao {
         map.put("bookId", bookId);
         namedParameterJdbcTemplate.update(sql, map);
     }
+
+    @Override
+    public void updateStock(Integer bookId, Integer stock) {
+        String sql = "UPDATE `book` SET stock = :stock WHERE book_id = :bookId;";
+        Map<String, Object> map = new HashMap<>();
+        map.put("bookId", bookId);
+        map.put("stock", stock);
+
+        namedParameterJdbcTemplate.update(sql, new MapSqlParameterSource(map));
+    }
 }
