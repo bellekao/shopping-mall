@@ -2,9 +2,9 @@ package com.kaobelle.bookmall.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kaobelle.bookmall.dto.ApiResponse;
 import com.kaobelle.bookmall.dto.CreateOrderRequest;
 import com.kaobelle.bookmall.model.Order;
-import com.kaobelle.bookmall.service.CartItemService;
 import com.kaobelle.bookmall.service.OrderService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -22,19 +22,17 @@ public class OrderController {
     private static final Logger log = LoggerFactory.getLogger(OrderController.class);
     @Autowired
     private OrderService orderService;
-    @Autowired
-    private CartItemService cartItemService;
 
     @GetMapping("/api/users/{userId}/orders")
-    public ResponseEntity<List<Order>> getOrders(@PathVariable Integer userId) {
+    public ResponseEntity<ApiResponse<List<Order>>> getOrders(@PathVariable Integer userId) {
 
         List<Order> orderList = orderService.getOrders(userId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(orderList);
+        return ResponseEntity.ok(ApiResponse.success("成功取得訂單列表", orderList));
     }
 
     @PostMapping("/api/users/{userId}/orders")
-    public ResponseEntity<Order> createOrder(@PathVariable Integer userId,
+    public ResponseEntity<ApiResponse<Order>> createOrder(@PathVariable Integer userId,
                                              @RequestBody @Valid CreateOrderRequest createOrderRequest) throws JsonProcessingException {
 
         // CreateOrderRequest createOrderRequest = cartItemService.getCartForOrder(userId);
@@ -46,6 +44,6 @@ public class OrderController {
         ObjectMapper objectMapper = new ObjectMapper();
         log.info("createOrderRequest: {}", objectMapper.writeValueAsString(createOrderRequest));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(order);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("訂單新增成功", order));
     }
 }
