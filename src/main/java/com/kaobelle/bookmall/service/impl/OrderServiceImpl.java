@@ -35,6 +35,19 @@ public class OrderServiceImpl implements OrderService {
     private CartItemDao cartItemDao;
 
     @Override
+    public List<Order> getOrders(Integer userId) {
+        List<Order> orderList = orderDao.getOrders(userId);
+
+        for (Order order : orderList) {
+            List<OrderItem> orderItemList = orderDao.getOrderItemByOrderId(order.getOrderId());
+
+            order.setOrderItemList(orderItemList);
+        }
+
+        return orderList;
+    }
+
+    @Override
     public Integer createOrder(Integer userId, CreateOrderRequest createOrderRequest) {
         // 檢查 userId 是否存在
         User user = userDao.getUserById(userId);

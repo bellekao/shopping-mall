@@ -24,6 +24,19 @@ public class OrderDaoImpl implements OrderDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
+    public List<Order> getOrders(Integer userId) {
+        String sql = "SELECT order_id, user_id, created_date, total_amount, order_status" +
+                " FROM `order` WHERE user_id = :userId";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", userId);
+
+        List<Order> orderList = namedParameterJdbcTemplate.query(sql, map, new OrderRowMapper());
+
+        return orderList;
+    }
+
+    @Override
     public Order getOrderById(Integer orderId) {
         String sql = "SELECT order_id, user_id, created_date, total_amount, order_status" +
                 " FROM `order` WHERE order_id = :orderId";

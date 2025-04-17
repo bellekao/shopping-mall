@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface OrderDao {
 
+    List<Order> getOrders(Integer userId);
+
     Order getOrderById(Integer orderId);
 
     List<OrderItem> getOrderItemByOrderId(Integer orderId);
