@@ -4,16 +4,27 @@
     <meta charset="UTF-8">
     <title>Book Mall</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
 </head>
 <body>
 <!-- 導覽列 -->
 <div th:replace="~{fragments/navbar.html :: navbar}"></div>
 <!-- page content -->
-<div class="container">
-    <div class="row mt-5 pt-5">
-        <div class="col-3 bg-primary" style="height: 80vh">left 歡迎來到首頁！</div>
-        <div class="col-9 bg-dark" style="height: 80vh">right</div>
+<div class="container mt-5 pt-5">
+    <div class="row">
+        <div class="col-md-3 mb-4" th:each="book : ${books}">
+            <div class="card h-100" style="width: 18rem">
+                <img th:src="${book.imageUrl}" class="card-img-top book-image" alt="商品圖片">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${book.title}">書名</h5>
+                    <p class="card-text" th:text="'作者：' + ${book.author}">作者資訊</p>
+                    <p class="card-text text-muted" th:text="'價格：$' + ${book.price}">價格資訊</p>
+                </div>
+                <div class="card-footer text-center">
+                    <a th:href="@{'/books/' + ${book.bookId}}" class="btn btn-primary">查看詳情</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script src="/js/common.js"></script>

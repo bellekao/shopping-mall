@@ -9,15 +9,17 @@ public interface CartItemService {
 
     List<CartItem> getCart(Integer userId);
 
+    CartItem getCartItemByCartItemId(Integer cartItemId);
+
     CartItem getCartItemByUserIdAndBookId(Integer userId, Integer bookId);
 
-    CreateOrderRequest getCartForOrder(Integer userId);
+    // CreateOrderRequest getCartForOrder(Integer userId);
 
     CartItem createCartItem(Integer userId, Integer bookId);
 
-    CartItem updateCartItem(Integer userId, Integer bookId, Integer quantity);
+    CartItem updateCartItem(Integer cartItemId, Integer userId, Integer quantity);
 
     void deleteCartItem(Integer userId, Integer bookId);
 
-    void deleteCart(Integer userId);
+    void clearCart(Integer userId);
 }

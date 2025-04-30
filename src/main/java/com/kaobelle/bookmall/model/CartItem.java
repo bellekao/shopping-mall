@@ -6,6 +6,8 @@ public class CartItem {
     private Integer bookId;
     private Integer quantity;
 
+    private Book book;
+
     public Integer getBookId() {
         return bookId;
     }
@@ -36,5 +38,13 @@ public class CartItem {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
     }
 }

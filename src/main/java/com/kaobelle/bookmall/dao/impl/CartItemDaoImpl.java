@@ -3,6 +3,7 @@ package com.kaobelle.bookmall.dao.impl;
 import com.kaobelle.bookmall.dao.CartItemDao;
 import com.kaobelle.bookmall.model.CartItem;
 import com.kaobelle.bookmall.rowmapper.CartItemRowMapper;
+import com.kaobelle.bookmall.rowmapper.CartItemWithBookRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -22,12 +23,13 @@ public class CartItemDaoImpl implements CartItemDao {
 
     @Override
     public List<CartItem> getCart(Integer userId) {
-        String sql = "SELECT cart_item_id, user_id, book_id, quantity" +
-                " FROM `cart_item` WHERE user_id = :userId";
+        String sql = "SELECT ci.cart_item_id, ci.user_id, ci.book_id, ci.quantity, b.image_url, b.price, b.title, b.author" +
+                " FROM `cart_item` AS ci LEFT JOIN `book` AS b ON b.book_id = ci.book_id" +
+                " WHERE user_id = :userId";
         Map<String, Object> map = new HashMap<>();
         map.put("userId", userId);
 
-        List<CartItem> cartItemList = namedParameterJdbcTemplate.query(sql, map, new CartItemRowMapper());
+        List<CartItem> cartItemList = namedParameterJdbcTemplate.query(sql, map, new CartItemWithBookRowMapper());
 
         return cartItemList;
     }

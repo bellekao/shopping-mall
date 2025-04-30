@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>書籍詳情</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<!-- navbar -->
+<div th:replace="/fragments/navbar.html :: navbar"></div>
+
+<!-- page-content -->
+<div class="container mt-5 pt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <img th:src="${book.imageUrl}" class="img-fluid" style="width: 18rem" alt="商品圖片">
+        </div>
+        <div class="col-md-8">
+            <h2 th:text="${book.title}">書名</h2>
+            <p th:text="'作者：' + ${book.author}">作者</p>
+            <p th:text="'分類：' + ${book.category}">分類</p>
+            <p th:text="'價格：$' + ${book.price}">價格</p>
+            <p th:text="'庫存：' + ${book.stock}">庫存</p>
+            <button class="btn btn-success" th:attr="data-book-id=${book.bookId}">加入購物車</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 取得所有加入購物車的按鈕
+        const addToCartButtons = document.querySelectorAll('.btn-success');
+
+        // 註冊點擊事件
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const bookId = this.getAttribute('data-book-id'); // 獲取 bookId
+                addToCart(bookId);
+            });
+        });
+
+        // 加入購物車函數
+        function addToCart(bookId) {
+            fetch(`/api/carts/${bookId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+                .then(response => {
+                    if (response.status === 401) {
+                        alert('請先登入');
+                        window.location.href = '/users/login';
+                    } else if (response.status === 200) {
+                        response.json().then(data => {
+                            alert(`商品已加入購物車，數量為 ${data.quantity}`);
+                        });
+                    } else if (response.status === 201) {
+                        alert("商品成功加入購物車！");
+                    } else {
+                        return response.json().then(data => {
+                            const msg = data?.message || "未知錯誤";
+                            alert("加入購物車失敗：" + msg);
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error("加入購物車錯誤：", err);
+                    alert("加入購物車失敗！");
+                });
+        }
+
+    });
+</script>
+<script src="/js/common.js"></script>
+<script src="/js/navbar.js"></script>
+</body>
+</html>

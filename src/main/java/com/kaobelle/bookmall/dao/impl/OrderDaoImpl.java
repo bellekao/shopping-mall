@@ -92,24 +92,18 @@ public class OrderDaoImpl implements OrderDao {
         String sql = "INSERT INTO `order_item`(order_id, book_id, quantity, amount)" +
                 " VALUES (:orderId, :bookId, :quantity, :amount);";
 
-        for (OrderItem orderItem : orderItemList) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("orderId", orderId);
-            map.put("bookId", orderItem.getBookId());
-            map.put("quantity", orderItem.getQuantity());
-            map.put("amount", orderItem.getAmount());
+        MapSqlParameterSource[] parameterSources = new MapSqlParameterSource[orderItemList.size()];
 
-            KeyHolder keyHolder = new GeneratedKeyHolder();
+        for (int i = 0; i < orderItemList.size(); i++) {
+            OrderItem orderItem = orderItemList.get(i);
 
-            namedParameterJdbcTemplate.update(
-                    sql,
-                    new MapSqlParameterSource(map),
-                    keyHolder,
-                    new String[]{"order_item_id"}
-            );
-
-            Integer orderItemId = keyHolder.getKey().intValue();
-            System.out.println("新增的 order_item_id: " + orderItemId); // 想拿來做後續處理的話可以用
+            parameterSources[i] = new MapSqlParameterSource();
+            parameterSources[i].addValue("orderId", orderId);
+            parameterSources[i].addValue("bookId", orderItem.getBookId());
+            parameterSources[i].addValue("quantity", orderItem.getQuantity());
+            parameterSources[i].addValue("amount", orderItem.getAmount());
         }
+
+        namedParameterJdbcTemplate.batchUpdate(sql, parameterSources);
     }
 }
