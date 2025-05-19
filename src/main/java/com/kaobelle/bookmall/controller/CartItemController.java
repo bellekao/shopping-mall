@@ -1,10 +1,13 @@
 package com.kaobelle.bookmall.controller;
 
 import com.kaobelle.bookmall.dto.ApiResponse;
+import com.kaobelle.bookmall.dto.BuyItem;
 import com.kaobelle.bookmall.dto.CartItemUpdateRequest;
+import com.kaobelle.bookmall.dto.CreateOrderRequest;
 import com.kaobelle.bookmall.model.CartItem;
 import com.kaobelle.bookmall.model.User;
 import com.kaobelle.bookmall.service.CartItemService;
+import com.kaobelle.bookmall.service.OrderService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +25,9 @@ public class CartItemController {
 
     @Autowired
     private CartItemService cartItemService;
+
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping("/api/carts")
     public ResponseEntity<ApiResponse<List<CartItem>>> getCart(HttpSession session) {
@@ -98,5 +105,38 @@ public class CartItemController {
             // 捕獲並回傳錯誤訊息
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "清空購物車失敗", "error", e.getMessage()));
         }
+    }
+
+    @PostMapping("/api/cart/checkout")
+    public ResponseEntity<ApiResponse<Integer>> checkout(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "未登入");
+        }
+
+        // 取得購物車內容
+        List<CartItem> cartItems = cartItemService.getCart(user.getUserId());
+        if (cartItems.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("購物車為空"));
+        }
+
+        // 將購物車轉為 CreateOrderRequest
+        List<BuyItem> buyItemList = new ArrayList<>();
+        for (CartItem cartItem : cartItems) {
+            BuyItem buyItem = new BuyItem();
+            buyItem.setBookId(cartItem.getBookId());
+            buyItem.setQuantity(cartItem.getQuantity());
+            buyItemList.add(buyItem);
+        }
+        CreateOrderRequest request = new CreateOrderRequest();
+        request.setBuyItemList(buyItemList);
+
+        // 呼叫 OrderService 建立訂單
+        Integer orderId = orderService.createOrder(user.getUserId(), request);
+
+        // 回傳訂單ID
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("訂單創建成功", orderId));
     }
 }

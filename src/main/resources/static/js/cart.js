@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
     const cartDetailsBody = document.getElementById("cart-details-body");
-    const checkoutBtn = document.getElementById("checkout-btn");
     const clearCartBtn = document.getElementById("clear-cart-btn");
 
     loadCart(); // 初始化載入
@@ -39,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td><img src="${book.imageUrl}" alt="商品圖示" class="img-fluid" style="width: 60px;"></td>
                 <td>${book.title}</td>
                 <td>${book.author}</td>
-                <td>$${book.price}</td>
+                <td>${book.price}</td>
                 <td class="text-center">
                     <input type="number" class="form-control form-control-sm quantity-input mx-auto d-block"
                            style="width: 70px; text-align: center;"
@@ -129,30 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function updateCartItemQuantity(itemId, quantity) {
-        fetch(`/api/carts/${itemId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ quantity })
-        })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(data => {
-                        throw new Error(data.message || '更新失敗');
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("更新成功", data);
-            })
-            .catch(err => {
-                console.error('更新數量失敗:', err);
-                alert('更新數量失敗：' + err.message);
-            });
-    }
-
     function updateCartTotal() {
         const totalCell = document.getElementById("cart-total");
         let total = 0;
@@ -209,9 +184,5 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error('清空購物車失敗:', err);
                 alert('清空購物車失敗：' + err.message);
             });
-    });
-
-    checkoutBtn.addEventListener('click', () => {
-        alert("結帳功能尚未實現");
     });
 });

@@ -96,13 +96,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOrderById(Integer orderId) {
+    public Order getOrderDetail(Integer userId, Integer orderId) {
+        // 根據 orderId 查詢訂單，並取得該訂單的 userId
         Order order = orderDao.getOrderById(orderId);
 
-        List<OrderItem> orderItemList = orderDao.getOrderItemByOrderId(orderId);
+        // 檢查該訂單是否存在，並且是否屬於當前登入的用戶
+        if (order == null || !order.getUserId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "無權限查看此訂單");
+        }
 
-        order.setOrderItemList(orderItemList);
+        // 查詢訂單項目
+        List<OrderItem> orderItems = orderDao.getOrderItemByOrderId(orderId);
+        if (orderItems.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "找不到訂單項目");
+        }
 
-        return order;
+        order.setOrderItemList(orderItems);  // 設定訂單中的項目清單
+        return order;  // 返回完整的訂單資訊（包括訂單項目）
     }
 }

@@ -3,7 +3,11 @@ package com.kaobelle.bookmall.controller;
 import com.kaobelle.bookmall.constant.BookCategory;
 import com.kaobelle.bookmall.dto.BookQueryParams;
 import com.kaobelle.bookmall.model.Book;
+import com.kaobelle.bookmall.model.Order;
+import com.kaobelle.bookmall.model.User;
 import com.kaobelle.bookmall.service.BookService;
+import com.kaobelle.bookmall.service.OrderService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,8 +23,16 @@ public class PageController {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private OrderService orderService;
+
     public PageController(BookService bookService) {
         this.bookService = bookService;
+    }
+
+    @Autowired
+    public PageController(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     @GetMapping("/index")
@@ -73,7 +85,7 @@ public class PageController {
 
         } else {
             model.addAttribute("book", new Book());
-            model.addAttribute("isEdit", null); // 明確傳 null 讓 th:if 可判斷，表示是新增
+            model.addAttribute("isEdit", null); // 傳 null 讓 th:if 可判斷，表示是新增
             model.addAttribute("categoryOptions", BookCategory.values());
         }
         return "managers/book_edit";
@@ -88,4 +100,19 @@ public class PageController {
     public String orderPage() {
         return "orders/order";
     }
+
+    // 顯示訂單詳細頁面
+    @GetMapping("/orders/{orderId}")
+    public String getOrderDetailPage(@PathVariable Integer orderId, Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/users/login";  // 未登入的情況下，跳轉至登入頁面
+        }
+
+        // 呼叫 Service 層來取得訂單詳情
+        Order order = orderService.getOrderDetail(user.getUserId(), orderId);
+        model.addAttribute("order", order);  // 將訂單資料放進 model 中傳遞到前端
+        return "orders/order_detail";  // 返回訂單詳細頁面的 Thymeleaf 視圖名稱
+    }
+
 }

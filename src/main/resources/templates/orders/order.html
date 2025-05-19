@@ -9,12 +9,24 @@
 <!-- navbar -->
 <div th:replace="~{fragments/navbar.html :: navbar}"></div>
 <!-- page-content -->
-<div class="container">
-    <div class="row mt-5 pt-5">
-        <p>order.html</p>
-    </div>
+<div class="page-content m-5">
+    <h1 class="p-5 text-center">訂單頁面</h1>
+    <table class="table table-sm text-center align-middle table-hover" id="orders-table">
+        <thead class="table-secondary">
+        <tr>
+            <th id="order_id">訂單編號</th>
+            <th id="created_date">訂單創建時間</th>
+            <th id="total_amount">總金額(TWD)</th>
+            <th style="width: 120px;">操作</th>
+        </tr>
+        </thead>
+        <tbody id="order-details-body">
+        </tbody>
+    </table>
 </div>
+
 <script src="/js/common.js"></script>
 <script src="/js/navbar.js"></script>
+<script src="/js/order.js"></script>
 </body>
 </html>

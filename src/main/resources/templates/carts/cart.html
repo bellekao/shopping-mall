@@ -9,6 +9,7 @@
 <body>
 <!-- navbar -->
 <div th:replace="~{fragments/navbar.html :: navbar}"></div>
+
 <!-- page-content -->
 <div class="page-content m-5">
     <h1 class="pt-5 text-center">我的購物車</h1>
@@ -43,5 +44,28 @@
 <script src="/js/common.js"></script>
 <script src="/js/navbar.js"></script>
 <script src="/js/cart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("checkout-btn").addEventListener("click", function () {
+            // 檢查購物車是否有項目
+            fetch("/api/cart/checkout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(response => {
+                if (response.ok) {
+                    alert("結帳成功！");
+                    location.reload();  // 或導向訂單頁
+                } else {
+                    return response.json().then(err => alert(err.message || "結帳失敗"));
+                }
+            }).catch(error => {
+                alert("發生錯誤：" + error);
+            });
+        });
+    });
+
+</script>
 </body>
 </html>
