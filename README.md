@@ -17,6 +17,12 @@
 ### 後台管理
 ![manager](https://github.com/user-attachments/assets/5985a9fd-7137-4d89-a7b2-072a04091a06)
 
+### 訂單頁面
+![orders](https://github.com/user-attachments/assets/77abfcf4-0ff2-40ac-94aa-5bfccfd2e064)
+
+### 訂單資訊頁面
+![orderDetail](https://github.com/user-attachments/assets/12d2de4a-01c3-49df-9002-dc6854d6118d)
+
 
 ## 需求分析
 1. 買家在輸入用戶名、電子郵件、密碼後可註冊會員，電子郵件不可重複。
